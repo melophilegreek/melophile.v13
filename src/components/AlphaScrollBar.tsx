@@ -39,6 +39,14 @@ interface Props {
    * Defaults to 0 for views with no such header (Liked Songs, etc).
    */
   indexOffset?: number;
+  /**
+   * Locked pixel height for the strip, measured by the parent only while
+   * the collapsing header is visible (see App.tsx). Keeps the strip a
+   * fixed size regardless of the header collapse/expand animation instead
+   * of stretching to fill whatever space that animation frees up. Falls
+   * back to 100% of the parent until the first measurement lands.
+   */
+  height?: number | null;
 }
 
 // Feature (Poweramp-style A-Z scrubber): press-and-drag anywhere on the
@@ -46,7 +54,7 @@ interface Props {
 // letter), with a large floating letter "bubble" tracking the touch point
 // -- matching Poweramp's fast-scroll index. A plain tap still jumps
 // straight to that letter, since it's just a drag with zero movement.
-export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0 }: Props) {
+export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, height = null }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
   const activeLetterRef = useRef<string | null>(null);
@@ -162,7 +170,8 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0 }:
           overflows and there's nothing to scroll in the first place. */}
       <div
         ref={containerRef}
-        className="shrink-0 flex flex-col items-stretch py-2 select-none z-10 h-full min-h-0 touch-none"
+        className="shrink-0 flex flex-col items-stretch py-2 select-none z-10 min-h-0 touch-none"
+        style={{ height: height ?? '100%', alignSelf: 'flex-end' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={endDrag}

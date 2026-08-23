@@ -621,6 +621,28 @@ export default function App() {
     else if (diff < -8) { setHeaderVisible(true); headerAnchorRef.current = scrollTop; }
   }, []);
 
+  // FIX (A-Z scrubber "expanding" while scrolling): the scrubber used to
+  // be `h-full` inside the same flex row as the song list, so it grew/
+  // shrank in lockstep with the collapsing-header animation above (that
+  // row gains height as the header collapses away). The 300ms CSS
+  // transition made the strip's letters visibly stretch apart mid-scroll.
+  // Now its height is locked to a measured pixel value instead of 100%,
+  // and that measurement is only ever taken while the header is visible
+  // -- so header collapse/expand can no longer change it. Extra vertical
+  // room freed up by the header collapsing just becomes blank space above
+  // the (still bottom-anchored) strip rather than stretching it.
+  const listAreaRef = useRef<HTMLDivElement>(null);
+  const [scrubberHeight, setScrubberHeight] = useState<number | null>(null);
+  useEffect(() => {
+    const el = listAreaRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      if (headerVisible) setScrubberHeight(entry.contentRect.height);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [headerVisible]);
+
   const loadAll = useCallback(async () => {
     const [allSongs, liked, pinned, pls, prefs, hist] = await Promise.all([
       getAllSongs(), getLikedIds(), getPinnedIds(), getPlaylists(), getPreferences(), getHistory(50),
@@ -2057,7 +2079,7 @@ export default function App() {
                 )}
 
                 {/* Song list + A-Z bar */}
-                <div className="flex-1 min-h-0 flex overflow-hidden">
+                <div ref={listAreaRef} className="flex-1 min-h-0 flex overflow-hidden">
                   {loading ? (
                     <div className="flex-1 flex items-center justify-center"><Loader2 size={28} className="animate-spin text-fg/20" /></div>
                   ) : filtered.length === 0 ? (
@@ -2114,7 +2136,7 @@ export default function App() {
                           alphabetically (it's filtered straight out of the
                           globally alphabetical `songs` array), so the same
                           jump-to-letter bar now applies there too. */}
-                      {!query && view !== 'most-played' && <AlphaScrollBar songs={alphaSongs} accentColor={accentColor} listRef={listRef} indexOffset={alphaOffset} />}
+                      {!query && view !== 'most-played' && <AlphaScrollBar songs={alphaSongs} accentColor={accentColor} listRef={listRef} indexOffset={alphaOffset} height={scrubberHeight} />}
                     </>
                   )}
                 </div>
