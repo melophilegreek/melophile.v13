@@ -106,7 +106,7 @@ export function LyricsModal({ song, currentTime, accentColor, onClose, onSeek, o
 
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:px-4"
-      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onClose(); }}>
       {/* FIX ("different black" seam above the Player Bar): this card used
           to be a small floating box (`h-[70vh]`, centered) on every screen
@@ -122,7 +122,7 @@ export function LyricsModal({ song, currentTime, accentColor, onClose, onSeek, o
           centered floating card only on desktop, where there's no such
           overlap to worry about. */}
       <div className="w-full h-full md:h-[70vh] md:max-w-md md:rounded-2xl rounded-t-2xl p-5 shadow-2xl animate-slide-up flex flex-col"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
         <div className="flex items-start justify-between mb-3 shrink-0">
           <div className="min-w-0">
             <h3 className="text-fg font-bold text-lg truncate">{localSong.title}</h3>

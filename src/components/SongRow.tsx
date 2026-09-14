@@ -182,7 +182,7 @@ function TrackMenu({
   return (
     <div ref={ref} role="menu" aria-label={`Actions for ${song.title}`}
       className="w-56 rounded-xl overflow-hidden shadow-2xl border border-fg/10 animate-fade-in fixed z-[1000]"
-      style={{ left, top, background: 'rgb(var(--surface-rgb) / 0.95)', backdropFilter: 'blur(16px)' }}>
+      style={{ left, top, background: 'rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
       <div className="px-3 py-2 border-b border-fg/10">
         <p className="text-fg text-xs font-semibold truncate">{song.title}</p>
         <p className="text-fg/40 text-xs truncate">{song.artist}</p>
@@ -257,11 +257,11 @@ function DeleteConfirmDialog({ song, onCancel, onConfirm }: {
 
   return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onCancel(); }}
       onClick={(e) => e.stopPropagation()}>
       <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-2">Delete song?</h3>
         <p className="text-fg/50 text-sm mb-5 leading-snug">
           <span className="text-fg/80 font-medium">{song.title}</span> will be permanently removed from your library. This can't be undone.

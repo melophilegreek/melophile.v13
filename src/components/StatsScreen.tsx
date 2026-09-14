@@ -200,7 +200,7 @@ export function StatsScreen({ songs, history, accentColor, onClearHistory, onPla
               <div className="relative aspect-square rounded-full overflow-hidden mt-3" style={{ background: placeholderBackground(accentColor) }}>
                 <StatArt song={stats.topArtistSong} accentColor={accentColor} textSize="text-2xl" />
                 {stats.topArtistCount > 0 && (
-                  <span className="absolute bottom-1 right-1 rounded-full text-[10px] font-bold px-2 py-1 text-white" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}>
+                  <span className="absolute bottom-1 right-1 rounded-full text-[10px] font-bold px-2 py-1 text-white" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(var(--glass-blur-xs))' }}>
                     {stats.topArtistCount} plays
                   </span>
                 )}
@@ -212,7 +212,7 @@ export function StatsScreen({ songs, history, accentColor, onClearHistory, onPla
             {stats.topSong ? (
               <div className="relative aspect-square rounded-xl overflow-hidden mt-3" style={{ background: placeholderBackground(accentColor) }}>
                 <StatArt song={stats.topSong} accentColor={accentColor} textSize="text-2xl" />
-                <span className="absolute bottom-1 right-1 rounded-full text-[10px] font-bold px-2 py-1 text-white" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}>
+                <span className="absolute bottom-1 right-1 rounded-full text-[10px] font-bold px-2 py-1 text-white" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(var(--glass-blur-xs))' }}>
                   {stats.topSong.playCount} play{stats.topSong.playCount === 1 ? '' : 's'}
                 </span>
               </div>

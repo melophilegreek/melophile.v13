@@ -225,7 +225,7 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, h
             color: getContrastText(accentColor),
             backgroundColor: accentColor,
             boxShadow: `0 8px 24px -4px ${accentColor}80`,
-            backdropFilter: 'blur(6px)',
+            backdropFilter: 'blur(var(--glass-blur-xs))',
           }}
         >
           {activeLetter}

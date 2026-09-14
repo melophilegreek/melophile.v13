@@ -48,6 +48,44 @@
   --elevated-rgb: 231 229 236;  /* raised surface: clearly separated from bg, not just a shade off */
 }
 
+/* Feature (Liquid Glass theme toggle): every modal/popover/player-bar
+   surface in the app blurs and lightly tints whatever's behind it (see the
+   backdropFilter usages across App.tsx/PlayerBar.tsx/SettingsPanel.tsx/etc,
+   and .glass-panel below). Rather than hardcoding a blur radius + alpha at
+   every single call site, they all resolve through this one set of
+   variables -- App.tsx sets `data-glass="on"` or `"off"` on <html> from the
+   user's saved preference (default: on, per the toggle in Settings), and
+   toggling it off collapses every blur radius to 0 and every translucent
+   surface to fully opaque, i.e. the app's original flat-panel look. `on`
+   also pushes saturation and the alpha channel a bit further than the
+   original one-off values (0.92/0.96 -> ~0.82/0.9, 140% -> 160% saturate)
+   so the effect actually reads as "glass" rather than "slightly soft edge".
+*/
+:root, [data-glass="on"] {
+  --glass-blur-xs: 5px;    /* thumbnail badges, alpha-scroll bubble */
+  --glass-blur-sm: 10px;   /* modal scrim behind the dialog */
+  --glass-blur-md: 18px;   /* context menus / popovers */
+  --glass-blur-lg: 26px;   /* modal/panel surfaces */
+  --glass-blur-panel: 28px; /* player bar / bottom-sheet glass-panel */
+  --glass-saturate: 165%;
+  --glass-surface-alpha: 0.86;   /* modal & popover backgrounds */
+  --glass-elevated-alpha: 0.82;  /* player bar / glass-panel background */
+  --glass-sheen: 1;               /* multiplier: full specular highlight */
+  --glass-border-alpha: 0.12;
+}
+[data-glass="off"] {
+  --glass-blur-xs: 0px;
+  --glass-blur-sm: 0px;
+  --glass-blur-md: 0px;
+  --glass-blur-lg: 0px;
+  --glass-blur-panel: 0px;
+  --glass-saturate: 100%;
+  --glass-surface-alpha: 1;
+  --glass-elevated-alpha: 1;
+  --glass-sheen: 0;
+  --glass-border-alpha: 0.08;
+}
+
 /* Feature (Premium light mode pass): elevation shadows were pure hardcoded
    `rgba(0,0,0,*)` values everywhere, tuned only for a near-black backdrop --
    a heavy black drop shadow on a dark surface reads as "depth", but the
@@ -151,10 +189,45 @@
      "frosted light glass" instead of staying dark in light mode.
   */
   .glass-panel {
-    background: linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 40%), rgb(var(--elevated-rgb) / 0.92);
-    backdrop-filter: blur(24px) saturate(140%);
-    -webkit-backdrop-filter: blur(24px) saturate(140%);
-    border-top: 1px solid rgb(var(--fg-rgb) / 0.08);
+    /* Liquid Glass: a brighter top sheen (scaled by --glass-sheen so it
+       fully disappears when the theme is off) plus a faint accent-tinted
+       wash low in the panel -- the closest a flat gradient gets to actual
+       refracted light traveling through a pane of glass, without a
+       per-frame shader. */
+    background:
+      linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.07 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 40%),
+      radial-gradient(120% 60% at 15% 0%, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), transparent 60%),
+      rgb(var(--elevated-rgb) / var(--glass-elevated-alpha));
+    backdrop-filter: blur(var(--glass-blur-panel)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-panel)) saturate(var(--glass-saturate));
+    border-top: 1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha));
+  }
+
+  /* Feature (Liquid Glass theme toggle): shared treatment for modal/sheet
+     surfaces (Settings, confirm dialogs, context menus, the lyrics/queue
+     panels, etc). Layers the same top sheen + accent-tinted corner glow
+     over the existing surface color, all driven by the --glass-* variables
+     above so a single attribute flip resets every one of these at once. */
+  .glass-surface {
+    background:
+      linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.06 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%),
+      rgb(var(--surface-rgb) / var(--glass-surface-alpha));
+    backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturate));
+    border: 1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha));
+    position: relative;
+  }
+  /* A thin, bright hairline hugging the top-left corner -- the "edge catches
+     the light" cue liquid glass surfaces have that flat translucent panels
+     don't. Purely decorative so it's excluded from hit-testing. */
+  .glass-surface::before {
+    content: '';
+    position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    padding: 1px;
+    background: linear-gradient(135deg, rgb(var(--fg-rgb) / calc(0.35 * var(--glass-sheen))), transparent 35%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
   }
 }
 

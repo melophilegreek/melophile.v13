@@ -254,7 +254,7 @@ function SleepTimerMenu({ accentColor, endsAt, endOfTrack, onSet, align }: {
       {open && menuPos && createPortal(
         <div ref={menuRef}
           className="fixed w-48 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(16px)' }}>
+          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           <div className="p-1">
             {remaining && (
               <div className="px-3 py-1.5 text-xs text-fg/40">Stops in {remaining}</div>
@@ -350,7 +350,7 @@ function PlaybackSpeedMenu({ accentColor, rate, preservePitch, onSetRate, onSetP
       {open && menuPos && createPortal(
         <div ref={menuRef}
           className="fixed w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(16px)' }}>
+          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           <div className="p-1">
             <div className="px-3 py-1.5 text-xs text-fg/40">Playback speed</div>
             {presets.map((p) => (
@@ -567,7 +567,7 @@ function PlayerOptionsMenu({
           // edge in reposition() above) instead of a flat 80vh, so the menu
           // scrolls internally rather than rendering behind the bar.
           className="fixed w-56 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-[70] animate-fade-in overflow-y-auto"
-          style={{ top: menuPos.top, left: menuPos.left, maxHeight: menuMaxHeight ?? '80vh', background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(16px)' }}>
+          style={{ top: menuPos.top, left: menuPos.left, maxHeight: menuMaxHeight ?? '80vh', background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           <div className="p-1">
             {/* Playback speed */}
             <button onClick={() => setExpandedSection((s) => (s === 'speed' ? null : 'speed'))}
@@ -733,7 +733,7 @@ export function PlayerBar({
       <div className="absolute inset-0 transition-all duration-700" style={{ background: bg }}>
         {showArt && (
           <img src={artUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25 scale-110 transition-all duration-700"
-            style={{ filter: 'blur(24px)' }} onError={handleArtError} />
+            style={{ filter: 'blur(var(--glass-blur-panel, 24px)) saturate(var(--glass-saturate, 100%))' }} onError={handleArtError} />
         )}
       </div>
       {/* BUG FIX (light mode contrast): this scrim used to be a flat
@@ -853,7 +853,7 @@ export function PlayerBar({
             {shuffleActive && <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: accentColor }} />}
             {showShuffleMenu && (
               <div className="absolute bottom-10 left-0 w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-                style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(16px)' }}>
+                style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
                 <div className="p-1">
                   {(['off', 'view', 'library'] as ShuffleMode[]).map((mode) => (
                     <button key={mode} onClick={() => { onShuffleModeChange(mode); setShowShuffleMenu(false); }}
@@ -962,7 +962,7 @@ export function PlayerBar({
               {shuffleActive && <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: accentColor }} />}
               {showShuffleMenu && (
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-                  style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(16px)' }}>
+                  style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
                   <div className="p-1">
                     {(['off', 'view', 'library'] as ShuffleMode[]).map((mode) => (
                       <button key={mode} onClick={() => { onShuffleModeChange(mode); setShowShuffleMenu(false); }}

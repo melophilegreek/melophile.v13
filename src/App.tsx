@@ -121,8 +121,8 @@ function Toast({ message, accentColor }: { message: string; accentColor: string 
     // message instead of a barely-there caption.
     <div className="fixed bottom-[192px] md:bottom-24 left-1/2 -translate-x-1/2 z-50 animate-toast-slide-up flex items-center gap-2.5"
       style={{
-        background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.06), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.97)',
-        backdropFilter: 'blur(18px)', border: '1px solid rgb(var(--fg-rgb) / 0.12)', borderRadius: 999,
+        background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.06 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))',
+        backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.12)', borderRadius: 999,
         padding: '12px 22px', color: 'rgb(var(--fg-rgb))', fontSize: 14, fontWeight: 500, whiteSpace: 'nowrap',
         boxShadow: `var(--shadow-toast), 0 0 0 1px ${accentColor}20, 0 0 24px -4px ${accentColor}40`,
       }}>
@@ -146,10 +146,10 @@ function NewPlaylistModal({ accentColor, onCreated, onClose }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onClose(); }}>
       <div className="w-80 rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-4">New Playlist</h3>
         <input ref={inputRef} type="text" placeholder="Playlist name" value={name}
           onChange={(e) => setName(e.target.value)}
@@ -184,10 +184,10 @@ function ConfirmDialog({ title, message, confirmLabel, onCancel, onConfirm }: {
 
   return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onCancel(); }}>
       <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-2">{title}</h3>
         <p className="text-fg/50 text-sm mb-5 leading-snug">{message}</p>
         <div className="flex gap-2">
@@ -216,10 +216,10 @@ function ImportFailuresDialog({ failures, onClose }: {
 
   return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onClose(); }}>
       <div className="w-full max-w-sm max-h-[70vh] flex flex-col rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-1 shrink-0">
           {failures.length} file{failures.length !== 1 ? 's' : ''} couldn't be imported
         </h3>
@@ -317,7 +317,7 @@ function SortMenu({ sortBy, sortDir, accentColor, onChange }: {
       {open && menuPos && createPortal(
         <div ref={menuRef}
           className="fixed w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 p-1 animate-fade-in"
-          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(16px)' }}>
+          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           {options.map((opt) => (
             <button key={opt.key}
               onClick={() => {
@@ -387,11 +387,11 @@ function DeletePlaylistDialog({ playlist, onCancel, onConfirm }: {
 
   return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onCancel(); }}
       onClick={(e) => e.stopPropagation()}>
       <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-2">Delete playlist?</h3>
         <p className="text-fg/50 text-sm mb-5 leading-snug">
           <span className="text-fg/80 font-medium">{playlist.name}</span> ({playlist.songIds.length} {playlist.songIds.length === 1 ? 'song' : 'songs'}) will be permanently deleted. Your songs themselves won't be removed from your library. This can't be undone.
@@ -442,6 +442,12 @@ export default function App() {
   // (see index.css). Defaults to 'dark' -- the app's original look -- and
   // is overwritten below once saved preferences load.
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  // Feature (Liquid Glass theme toggle): drives `document.documentElement`'s
+  // `data-glass` attribute, which every frosted/blurred surface in the app
+  // resolves through (see the --glass-* variables in index.css). Defaults
+  // to true -- the app's current look -- and is overwritten below once
+  // saved preferences load.
+  const [liquidGlass, setLiquidGlass] = useState(true);
   // Feature (Row size): controls song row height + thumbnail/text scale
   // across Library, playlists, artist/album views, search, etc.
   const [rowSize, setRowSize] = useState<RowSize>('comfortable');
@@ -634,6 +640,7 @@ export default function App() {
     setRowSize(prefs.rowSize ?? 'comfortable');
     setPlayerBarStyle(prefs.playerBarStyle ?? 'normal');
     setTheme(prefs.theme ?? 'dark');
+    setLiquidGlass(prefs.liquidGlass ?? true);
   }, []);
 
   useEffect(() => { loadAll(); }, [loadAll]);
@@ -646,6 +653,13 @@ export default function App() {
   // `[data-theme="light"]`. Setting the attribute here is the one place
   // that actually flips the whole app's palette.
   useEffect(() => { document.documentElement.setAttribute('data-theme', theme); }, [theme]);
+
+  // Feature (Liquid Glass theme toggle): every frosted/blurred surface in
+  // the app reads from the --glass-* CSS variables (see index.css), scoped
+  // under `[data-glass="on"]` / `[data-glass="off"]`. Setting the attribute
+  // here is the one place that actually turns the glass effect on or off
+  // app-wide.
+  useEffect(() => { document.documentElement.setAttribute('data-glass', liquidGlass ? 'on' : 'off'); }, [liquidGlass]);
 
   // ── Listening time tracking: accumulate minutes while audio is actually playing ──
   useEffect(() => {
@@ -1398,6 +1412,12 @@ export default function App() {
     await savePreferences({ theme: t });
   }, []);
 
+  // Feature (Liquid Glass theme toggle): passed down to SettingsPanel.
+  const handleToggleLiquidGlass = useCallback(async (v: boolean) => {
+    setLiquidGlass(v);
+    await savePreferences({ liquidGlass: v });
+  }, []);
+
   // Feature (OS notifications): turning this on is the explicit user
   // action that triggers the actual browser permission prompt -- nothing
   // requests it on page load. If the person denies (or has previously
@@ -1513,6 +1533,7 @@ export default function App() {
     setLikedIds(liked); setPinnedIds(pinned); setPlaylists(pls);
     setAccentColor(prefs.accentColor); setManualAccentColor(prefs.accentColor);
     setAutoTheme(prefs.autoTheme ?? false);
+    setLiquidGlass(prefs.liquidGlass ?? true);
     const perm = await notificationPermissionAsync();
     setNotifPermission(perm);
     setOsNotifications((prefs.osNotifications ?? false) && perm === 'granted');
@@ -1829,7 +1850,7 @@ export default function App() {
                 {showImportMenu && importMenuPos && createPortal(
                   <div ref={importMenuContentRef}
                     className="fixed w-52 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-                    style={{ top: importMenuPos.top, left: importMenuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(16px)' }}>
+                    style={{ top: importMenuPos.top, left: importMenuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
                     <div className="p-1">
                       {/* Folder import */}
                       <label className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-fg/80 hover:bg-fg/10 text-sm transition-colors cursor-pointer"
@@ -2170,6 +2191,8 @@ export default function App() {
           onAccentChange={handleAccentChange}
           theme={theme}
           onSetTheme={handleSetTheme}
+          liquidGlass={liquidGlass}
+          onToggleLiquidGlass={handleToggleLiquidGlass}
           autoTheme={autoTheme}
           onToggleAutoTheme={handleToggleAutoTheme}
           rowSize={rowSize}
@@ -2268,10 +2291,10 @@ export default function App() {
       {/* Feature (Bulk multi-select): "add to playlist" picker */}
       {showBulkPlaylistMenu && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4"
-          style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(var(--glass-blur-xs))' }}
           onMouseDown={(e) => { if (e.currentTarget === e.target) setShowBulkPlaylistMenu(false); }}>
           <div className="w-full max-w-xs rounded-2xl p-4 shadow-2xl animate-slide-up"
-            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)' }}>
+            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)' }}>
             <h3 className="text-fg font-semibold text-sm mb-3">
               Add {selectedIds.size} song{selectedIds.size !== 1 ? 's' : ''} to playlist
             </h3>
@@ -2365,7 +2388,7 @@ export default function App() {
         // higher z-index below, rather than by carving a hole in the
         // overlay.
         <div className="fixed inset-0 z-50 flex justify-end md:items-center md:justify-center"
-          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(var(--glass-blur-xs))' }}
           onMouseDown={(e) => { if (e.target === e.currentTarget) setShowQueueModal(false); }}>
           {/* FIX (mismatched "different black" band around the Player Bar):
               this panel previously stopped 184px short of the bottom so the
@@ -2373,7 +2396,7 @@ export default function App() {
               be covered by it. But that left the *outer* overlay's lighter,
               more transparent backdrop (rgba(0,0,0,0.5)) exposed behind/
               around the bar instead of this panel's own much darker, more
-              opaque background (rgb(var(--surface-rgb) / 0.96)) -- the two don't
+              opaque background (rgb(var(--surface-rgb) / var(--glass-surface-alpha))) -- the two don't
               match, so it looked like a distinct lighter strip or "seam"
               right where the panel's shorter height cut off. Letting this
               panel go back to full height means its own solid dark
@@ -2382,7 +2405,7 @@ export default function App() {
               added inside QueuePanel) keeps its rows from being visually
               hidden under the bar instead. */}
           <div className="w-full max-w-sm h-full animate-slide-in-right md:animate-slide-up md:h-auto md:max-h-[80vh]"
-            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', borderLeft: '1px solid rgb(var(--fg-rgb) / 0.1)', maxWidth: '480px' }}>
+            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', borderLeft: '1px solid rgb(var(--fg-rgb) / 0.1)', maxWidth: '480px' }}>
             <QueuePanel
               queue={upcomingSongs}
               userQueueLen={userQueueLen}

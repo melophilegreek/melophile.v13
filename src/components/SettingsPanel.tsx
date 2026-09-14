@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { X, Check, Heart, Trash2, AlertTriangle, Sparkles, ImagePlus, Download, Upload, SlidersHorizontal, FolderOpen, ChevronDown, Palette, Moon, Sun, Gauge } from 'lucide-react';
+import { X, Check, Heart, Trash2, AlertTriangle, Sparkles, ImagePlus, Download, Upload, SlidersHorizontal, FolderOpen, ChevronDown, Palette, Moon, Sun, Gauge, Droplets } from 'lucide-react';
 import type { ArtRescanProgress } from '../lib/scanner';
 import type { LoudnessProgress } from '../lib/loudness';
 import { getContrastText } from '../lib/color';
@@ -32,6 +32,12 @@ interface Props {
    *  'dark' -- the app's original, only look before this feature existed. */
   theme: 'dark' | 'light';
   onSetTheme: (t: 'dark' | 'light') => void;
+  /** Feature (Liquid Glass theme toggle): when on (the default), modal,
+   *  popover, and player-bar surfaces get the frosted/saturated "glass"
+   *  treatment; when off, those same surfaces fall back to solid, opaque,
+   *  unblurred panels. */
+  liquidGlass: boolean;
+  onToggleLiquidGlass: (v: boolean) => void;
   /** Feature (Dynamic theming): when on, the accent color automatically
    *  follows the dominant color of whatever's currently playing album art
    *  instead of the manually-picked color below. */
@@ -93,7 +99,7 @@ interface Props {
 }
 
 export function SettingsPanel({
-  accentColor, onAccentChange, onClose, theme, onSetTheme, autoTheme, onToggleAutoTheme, rowSize, onRowSizeChange, playerBarStyle, onPlayerBarStyleChange, songCount, onDeleteAllSongs, onRescanArt, artRescan,
+  accentColor, onAccentChange, onClose, theme, onSetTheme, liquidGlass, onToggleLiquidGlass, autoTheme, onToggleAutoTheme, rowSize, onRowSizeChange, playerBarStyle, onPlayerBarStyleChange, songCount, onDeleteAllSongs, onRescanArt, artRescan,
   crossfadeSeconds, onCrossfadeChange, eq, onEQChange, onEQPreset, onExportBackup, onImportBackupFile,
   autoRescanSupported, autoRescanEnabled, autoRescanFolderName, onEnableAutoRescan, onDisableAutoRescan,
   osNotifications, onToggleOSNotifications, onSendTestNotification, notificationsSupported, notifPermission,
@@ -183,10 +189,10 @@ export function SettingsPanel({
   // Queue's intentional layering.
   return (
     <div ref={overlayRef} className="fixed inset-0 z-[70] flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.target === overlayRef.current) onClose(); }}>
       <div className="w-full max-w-sm max-h-[85vh] overflow-y-auto rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'rgb(var(--surface-rgb) / 0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
         {/* FIX (close button disappears on scroll): this header used to be a
             plain child inside the same overflow-y-auto container as the rest
             of the settings content, so scrolling down carried the X button
@@ -197,7 +203,7 @@ export function SettingsPanel({
             p-6 padding just for this row) so scrolled content doesn't peek
             out from behind it. */}
         <div className="sticky -top-6 -mx-6 -mt-6 px-6 pt-6 pb-4 mb-1 z-10 flex items-center justify-between"
-          style={{ background: 'rgb(var(--surface-rgb) / 0.98)', backdropFilter: 'blur(20px)' }}>
+          style={{ background: 'rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))' }}>
           <h2 className="text-fg font-bold text-xl">Settings</h2>
           <button onClick={onClose} className="btn-icon w-8 h-8 hover:bg-fg/10 rounded-full">
             <X size={18} className="text-fg/60" />
@@ -235,6 +241,28 @@ export function SettingsPanel({
             </button>
           </div>
         </div>
+
+        {/* Feature (Liquid Glass theme toggle): frosted, blurred, top-lit
+            surfaces (Settings itself, popovers, the player bar, dialogs)
+            versus flat, solid, opaque ones -- a single on/off switch that
+            drives the --glass-* CSS variables (see index.css). Sits right
+            under the dark/light control since it's the other "what does
+            the whole app look like" choice; defaults to on. */}
+        <button
+          onClick={() => onToggleLiquidGlass(!liquidGlass)}
+          className="w-full flex items-center justify-between gap-2 py-2.5 px-3 rounded-xl border border-fg/10 text-sm font-medium transition-colors hover:bg-fg/5 mb-2.5"
+        >
+          <span className="flex items-center gap-2 text-fg/70 text-left">
+            <Droplets size={15} />
+            <span>
+              Liquid Glass
+              <span className="block text-[11px] font-normal text-fg/35 mt-0.5">Frosted, translucent panels throughout the app</span>
+            </span>
+          </span>
+          <span className="w-9 h-5 rounded-full relative transition-colors shrink-0" style={{ background: liquidGlass ? accentColor : 'rgb(var(--fg-rgb) / 0.15)' }}>
+            <span className="absolute top-0.5 w-4 h-4 rounded-full bg-fg transition-all" style={{ left: liquidGlass ? 18 : 2 }} />
+          </span>
+        </button>
 
         {/* Feature (Dynamic theming): dominant-color-from-album-art
             auto-theming, sitting just above the manual color picker since
@@ -635,10 +663,10 @@ export function SettingsPanel({
 
       {confirmingDeleteAll && (
         <div className="fixed inset-0 z-[1200] flex items-center justify-center px-4"
-          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
           onMouseDown={(e) => { if (e.currentTarget === e.target && !deleting) setConfirmingDeleteAll(false); }}>
           <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / 0.05), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / 0.96)', backdropFilter: 'blur(20px)', border: '1px solid rgba(239,68,68,0.25)', boxShadow: 'var(--shadow-panel)' }}>
+            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgba(239,68,68,0.25)', boxShadow: 'var(--shadow-panel)' }}>
             <div className="flex items-center gap-2.5 mb-2">
               <AlertTriangle size={18} className="text-red-400 shrink-0" />
               <h3 className="text-fg font-bold text-lg">Delete all songs?</h3>

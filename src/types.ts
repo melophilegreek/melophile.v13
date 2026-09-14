@@ -136,6 +136,12 @@ export interface Preferences {
    *  a plain progress line) on mobile only -- desktop is unaffected
    *  regardless of this setting. Defaults to 'normal' when unset. */
   playerBarStyle?: PlayerBarStyle;
+  /** Feature (Liquid Glass theme toggle): when true, every modal/popover/
+   *  player-bar surface gets the frosted, saturated, top-lit "glass" look
+   *  (see the --glass-* variables in index.css). When false, those same
+   *  surfaces fall back to solid, opaque, unblurred panels. Defaults to
+   *  true -- the app's current look -- when unset. */
+  liquidGlass?: boolean;
 }
 
 export type RowSize = 'tiny' | 'compact' | 'comfortable' | 'large' | 'extraLarge';
