@@ -602,9 +602,10 @@ export default function App() {
   // Feature (collapsing header on scroll): the top header (Library title +
   // search + import icon) and the toolbar row beneath it (song count +
   // Sort, or the playlist/most-played toolbar) hide together as one unit
-  // once the list is scrolled down a bit, and reappear on any small
-  // scroll-up -- so getting back to them doesn't need scrolling all the
-  // way to the top.
+  // once the list is scrolled down at all, and only reappear once the
+  // list is scrolled back to the very top -- a small scroll-up no longer
+  // brings it back, since that made it pop back in while still deep in
+  // the list.
   //
   // FIX (not collapsing on a slow scroll): comparing consecutive scroll
   // events' deltas meant a slow drag -- lots of tiny events, each moving
@@ -618,7 +619,6 @@ export default function App() {
     if (scrollTop <= 16) { setHeaderVisible(true); headerAnchorRef.current = scrollTop; return; }
     const diff = scrollTop - headerAnchorRef.current;
     if (diff > 24) { setHeaderVisible(false); headerAnchorRef.current = scrollTop; }
-    else if (diff < -8) { setHeaderVisible(true); headerAnchorRef.current = scrollTop; }
   }, []);
 
   // FIX (A-Z scrubber "expanding" while scrolling): the scrubber used to
