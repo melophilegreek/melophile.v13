@@ -50,13 +50,45 @@ function VirtualListInner<T>(
   const [scrollTop, setScrollTop] = useState(0);
   const [containerHeight, setContainerHeight] = useState(600);
 
+  // PERF FIX (choppy/laggy header collapse animation): the collapsing
+  // header above this list (App.tsx) animates its height for 300ms, which
+  // means this container's own height changes on essentially every
+  // animation frame for the whole duration. Committing every single one
+  // of those readings straight to state -- as this used to -- forces a
+  // full re-render (recomputing startIdx/endIdx and re-mapping ~30-40 song
+  // rows) on every frame, competing with the browser's own layout work
+  // from the CSS animation and reading as stutter, especially on slower
+  // Android devices with a large library. Two changes fix this: (1) route
+  // through requestAnimationFrame so at most one update is ever pending
+  // at a time, same pattern as AlphaScrollBar's drag-perf fix, and (2)
+  // skip the update entirely when the rounded height hasn't actually
+  // changed, since sub-pixel readings during the transition don't shift
+  // which rows should be visible anyway.
+  const containerHeightRef = useRef(600);
+  useEffect(() => { containerHeightRef.current = containerHeight; }, [containerHeight]);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const ro = new ResizeObserver((entries) => setContainerHeight(entries[0].contentRect.height));
+    let rafId: number | null = null;
+    let pending: number | null = null;
+    const ro = new ResizeObserver((entries) => {
+      pending = entries[0].contentRect.height;
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        if (pending === null) return;
+        const h = Math.round(pending);
+        if (h !== Math.round(containerHeightRef.current)) setContainerHeight(pending);
+        pending = null;
+      });
+    });
     ro.observe(el);
     setContainerHeight(el.clientHeight);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const handleScroll = useCallback(() => {
