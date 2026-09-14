@@ -344,13 +344,13 @@ export function SettingsPanel({
             and tap. */}
         <div className="mt-5 pt-4 border-t border-fg/10">
           <h3 className="text-fg/60 text-xs font-semibold uppercase tracking-wider mb-3">Row Size</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {(['compact', 'comfortable', 'large'] as const).map((opt) => {
+          <div className="grid grid-cols-5 gap-1.5">
+            {(['tiny', 'compact', 'comfortable', 'large', 'extraLarge'] as const).map((opt) => {
               const active = rowSize === opt;
-              const label = opt === 'compact' ? 'Compact' : opt === 'comfortable' ? 'Default' : 'Large';
+              const label = opt === 'tiny' ? 'Tiny' : opt === 'compact' ? 'Compact' : opt === 'comfortable' ? 'Default' : opt === 'large' ? 'Large' : 'X-Large';
               return (
                 <button key={opt} onClick={() => onRowSizeChange(opt)}
-                  className="py-2.5 rounded-xl border text-sm font-medium transition-colors"
+                  className="py-2.5 px-1 rounded-xl border text-[11px] font-medium transition-colors"
                   style={{
                     borderColor: active ? accentColor : 'rgb(var(--fg-rgb) / 0.1)',
                     background: active ? `${accentColor}18` : 'transparent',

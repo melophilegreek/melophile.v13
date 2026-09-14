@@ -138,7 +138,7 @@ export interface Preferences {
   playerBarStyle?: PlayerBarStyle;
 }
 
-export type RowSize = 'compact' | 'comfortable' | 'large';
+export type RowSize = 'tiny' | 'compact' | 'comfortable' | 'large' | 'extraLarge';
 
 export type PlayerBarStyle = 'normal' | 'minimized';
 
@@ -180,7 +180,7 @@ export const DEFAULT_ACCENT = '#2C5FCC';
 // ROW_HEIGHT is kept as the 'comfortable' value for any caller that still
 // wants the original default (e.g. VirtualList's fallback when no
 // getItemHeight is passed).
-export const ROW_HEIGHTS: Record<RowSize, number> = { compact: 44, comfortable: 56, large: 72 };
+export const ROW_HEIGHTS: Record<RowSize, number> = { tiny: 36, compact: 44, comfortable: 56, large: 72, extraLarge: 88 };
 export const ROW_HEIGHT = ROW_HEIGHTS.comfortable;
 // Height of the "Pinned" section header row inserted above pinned songs in
 // the Library/Playlist views (Feature: Pin/Unpin). Deliberately shorter than

@@ -394,9 +394,11 @@ export function SongRow({
   // together with the row height the parent list is currently using, so
   // a taller row isn't just empty padding around the same tiny elements.
   const sizeStyles: Record<RowSize, { thumb: string; gap: string; title: string; meta: string }> = {
+    tiny: { thumb: 'w-6 h-6', gap: 'gap-2', title: 'text-[12px]', meta: 'text-[10px]' },
     compact: { thumb: 'w-8 h-8', gap: 'gap-2.5', title: 'text-[13px]', meta: 'text-[11px]' },
     comfortable: { thumb: 'w-10 h-10', gap: 'gap-3', title: 'text-sm', meta: 'text-xs' },
     large: { thumb: 'w-14 h-14', gap: 'gap-3.5', title: 'text-base', meta: 'text-sm' },
+    extraLarge: { thumb: 'w-16 h-16', gap: 'gap-4', title: 'text-lg', meta: 'text-sm' },
   };
   const s = sizeStyles[size];
 
