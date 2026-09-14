@@ -223,9 +223,19 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, h
             height: 72,
             fontSize: 32,
             color: getContrastText(accentColor),
-            backgroundColor: accentColor,
-            boxShadow: `0 8px 24px -4px ${accentColor}80`,
-            backdropFilter: 'blur(var(--glass-blur-xs))',
+            /* Feature (Liquid Glass theme toggle): this used to be a fully
+               opaque `backgroundColor: accentColor`, so the backdropFilter
+               already here had nothing translucent to blur -- it was a
+               no-op. color-mix against transparent gives it real alpha, so
+               it now actually reads as a tinted pane of glass floating over
+               the list rather than a solid sticker; falls back to a fully
+               opaque tile when the theme is off (mirrors --glass-surface-alpha's
+               on/off swing elsewhere). */
+            background: `color-mix(in srgb, ${accentColor} calc(58% + 42% * (1 - var(--glass-sheen, 1))), transparent)`,
+            boxShadow: `0 8px 28px -4px ${accentColor}90, inset 0 1.5px 0 rgb(255 255 255 / calc(0.5 * var(--glass-sheen, 1)))`,
+            border: `1px solid color-mix(in srgb, ${accentColor} 40%, transparent)`,
+            backdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
+            WebkitBackdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
           }}
         >
           {activeLetter}

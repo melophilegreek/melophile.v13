@@ -2365,6 +2365,7 @@ export default function App() {
           song={playerState.currentSong}
           currentTime={playerState.currentTime}
           accentColor={accentColor}
+          artUrl={artUrl}
           onClose={() => setShowLyrics(false)}
           onSeek={(t) => player.seek(t)}
           onUpdated={handleSongUpdated}

@@ -9,6 +9,11 @@ interface Props {
   song: Song;
   currentTime: number;
   accentColor: string;
+  /** Feature (Liquid Glass theme toggle): the currently playing song's
+   *  cached album-art object URL (same one the player bar uses), reused
+   *  here as a blurred backdrop so the glass panel has something to
+   *  actually reveal. Null falls back to the plain surface color. */
+  artUrl: string | null;
   onClose: () => void;
   /** Feature (tap-to-seek): jump playback to a synced line's timestamp when
    *  it's tapped, same mechanism the player bar's scrub row uses. */
@@ -19,7 +24,7 @@ interface Props {
   onUpdated: (updated: Song) => void;
 }
 
-export function LyricsModal({ song, currentTime, accentColor, onClose, onSeek, onUpdated }: Props) {
+export function LyricsModal({ song, currentTime, accentColor, artUrl, onClose, onSeek, onUpdated }: Props) {
   const activeRef = useRef<HTMLParagraphElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -121,8 +126,24 @@ export function LyricsModal({ song, currentTime, accentColor, onClose, onSeek, o
           the way down behind the Player Bar, and keep the original smaller
           centered floating card only on desktop, where there's no such
           overlap to worry about. */}
-      <div className="w-full h-full md:h-[70vh] md:max-w-md md:rounded-2xl rounded-t-2xl p-5 shadow-2xl animate-slide-up flex flex-col"
-        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
+      <div className="w-full h-full md:h-[70vh] md:max-w-md md:rounded-2xl rounded-t-2xl shadow-2xl animate-slide-up flex flex-col relative overflow-hidden"
+        style={{ backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
+        {/* Feature (Liquid Glass theme toggle): a lyrics sheet sitting over
+            plain page background had nothing colorful behind it for the
+            glass tokens to reveal -- alpha and blur on a near-black panel
+            over a near-black backdrop just looks like a slightly softer
+            black panel. Reusing the *song's own* blurred, saturated album
+            art as the backdrop (same trick as the player bar) gives the
+            glass something to actually catch and refract, so this becomes
+            the one screen in the app where the effect is unmistakable. */}
+        {artUrl && (
+          <img src={artUrl} alt="" aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover scale-110"
+            style={{ filter: 'blur(var(--glass-blur-panel, 32px)) saturate(var(--glass-saturate))', opacity: 'calc(0.55 * var(--glass-sheen, 1) + 0.06)' }} />
+        )}
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))' }} />
+        <div className="relative z-10 flex flex-col h-full min-h-0 p-5">
         <div className="flex items-start justify-between mb-3 shrink-0">
           <div className="min-w-0">
             <h3 className="text-fg font-bold text-lg truncate">{localSong.title}</h3>
@@ -207,6 +228,7 @@ export function LyricsModal({ song, currentTime, accentColor, onClose, onSeek, o
             <p className="text-fg/80 text-sm leading-relaxed whitespace-pre-wrap">{localSong.lyrics}</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
