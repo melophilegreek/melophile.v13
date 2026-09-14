@@ -221,33 +221,24 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, h
             width: 72,
             height: 72,
             fontSize: 32,
-            color: '#fff',
-            textShadow: '0 1px 4px rgb(0 0 0 / 0.5)',
-            /* Feature (Liquid Glass theme toggle), redesigned: a flat
-               accent-colored fill with a border -- even a translucent one
-               -- just reads as a solid colored icon, since there's no cue
-               telling the eye "this is glass" specifically rather than
-               "this is a blue square". Rebuilt around the same cues real
-               glass/HUD bubbles use (think macOS's volume indicator):
-                (1) a neutral translucent base -- same --elevated-rgb token
-                    every other glass surface in the app uses, not a wash of
-                    pure accent, so it reads as glass *tinted* by the accent
-                    rather than accent-colored plastic;
-                (2) that tint fades from ~50% to ~20% alpha corner-to-corner
-                    instead of sitting flat, which is what gives it a sense
-                    of volume/depth instead of being a flat chip;
-                (3) an actual glare spot (small bright radial highlight,
-                    off-center) -- the single most recognizable "this is
-                    glass" cue, which a 1px inset line doesn't read as at
-                    this size.
-               Text switched to white + a soft drop shadow instead of
-               contrast-computed against the solid accent color, since the
-               fill underneath it is no longer solid or flat enough for that
-               computation to mean much -- white-on-dark-glass is legible
-               regardless of exactly how the tint underneath renders. */
-            background: `radial-gradient(58% 58% at 27% 24%, rgb(255 255 255 / calc(0.55 * var(--glass-sheen, 1))), transparent 62%), linear-gradient(155deg, color-mix(in srgb, ${accentColor} 50%, transparent), color-mix(in srgb, ${accentColor} 18%, transparent)), rgb(var(--elevated-rgb) / var(--glass-elevated-alpha))`,
-            boxShadow: `0 3px 10px -3px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / calc(0.3 * var(--glass-sheen, 1)))`,
-            border: `1px solid rgb(255 255 255 / calc(0.22 * var(--glass-sheen, 1) + 0.08))`,
+            color: accentColor,
+            textShadow: '0 1px 3px rgb(0 0 0 / 0.35)',
+            /* Feature (Liquid Glass theme toggle), redesigned again: a
+               radial "glare spot" is a skeuomorphic glossy-button cue (2009
+               web-2.0 icon, basically), not a glass one -- a real pane of
+               glass doesn't have a little sunburst painted on it. Dropped it
+               entirely and matched the exact same quiet glass language every
+               other surface in the app already uses (see .glass-surface /
+               the modal panels in App.tsx): a flat, evenly frosted
+               --elevated-rgb base with a soft top-down sheen, a thin bright
+               top-edge highlight, nothing radial or "shiny". The accent
+               color now lives only in the letter itself (bold, tinted,
+               with a small drop shadow for legibility) rather than
+               flooding the whole tile -- consistent with how the rest of
+               the UI uses accent as a small deliberate accent, not a fill. */
+            background: `linear-gradient(180deg, rgb(255 255 255 / calc(0.14 * var(--glass-sheen, 1))), rgb(255 255 255 / 0) 55%), rgb(var(--elevated-rgb) / var(--glass-elevated-alpha))`,
+            boxShadow: `0 4px 14px -4px rgb(0 0 0 / 0.5), inset 0 1px 0 rgb(255 255 255 / calc(0.22 * var(--glass-sheen, 1)))`,
+            border: `1px solid rgb(255 255 255 / calc(0.14 * var(--glass-sheen, 1) + 0.06))`,
             backdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
             WebkitBackdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
           }}
