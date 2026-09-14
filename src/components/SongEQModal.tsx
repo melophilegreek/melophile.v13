@@ -44,7 +44,7 @@ export function SongEQModal({ song, globalEQ, accentColor, onClose, onUpdated }:
       style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onClose(); }}>
       <div className="w-full max-w-sm rounded-2xl p-5 shadow-2xl animate-slide-up max-h-[85vh] overflow-y-auto"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
         <div className="flex items-center justify-between mb-1">
           <h3 className="text-fg font-bold">Song EQ</h3>
           <button onClick={onClose} className="btn-icon w-7 h-7 hover:bg-fg/10 rounded-full flex items-center justify-center">

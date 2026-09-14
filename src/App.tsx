@@ -121,7 +121,7 @@ function Toast({ message, accentColor }: { message: string; accentColor: string 
     // message instead of a barely-there caption.
     <div className="fixed bottom-[192px] md:bottom-24 left-1/2 -translate-x-1/2 z-50 animate-toast-slide-up flex items-center gap-2.5"
       style={{
-        background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.06 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))',
+        background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))',
         backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.12)', borderRadius: 999,
         padding: '12px 22px', color: 'rgb(var(--fg-rgb))', fontSize: 14, fontWeight: 500, whiteSpace: 'nowrap',
         boxShadow: `var(--shadow-toast), 0 0 0 1px ${accentColor}20, 0 0 24px -4px ${accentColor}40`,
@@ -149,7 +149,7 @@ function NewPlaylistModal({ accentColor, onCreated, onClose }: {
       style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onClose(); }}>
       <div className="w-80 rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-4">New Playlist</h3>
         <input ref={inputRef} type="text" placeholder="Playlist name" value={name}
           onChange={(e) => setName(e.target.value)}
@@ -187,7 +187,7 @@ function ConfirmDialog({ title, message, confirmLabel, onCancel, onConfirm }: {
       style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onCancel(); }}>
       <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-2">{title}</h3>
         <p className="text-fg/50 text-sm mb-5 leading-snug">{message}</p>
         <div className="flex gap-2">
@@ -219,7 +219,7 @@ function ImportFailuresDialog({ failures, onClose }: {
       style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(var(--glass-blur-sm))' }}
       onMouseDown={(e) => { if (e.currentTarget === e.target) onClose(); }}>
       <div className="w-full max-w-sm max-h-[70vh] flex flex-col rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-1 shrink-0">
           {failures.length} file{failures.length !== 1 ? 's' : ''} couldn't be imported
         </h3>
@@ -317,7 +317,7 @@ function SortMenu({ sortBy, sortDir, accentColor, onChange }: {
       {open && menuPos && createPortal(
         <div ref={menuRef}
           className="fixed w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 p-1 animate-fade-in"
-          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
+          style={{ top: menuPos.top, left: menuPos.left, background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           {options.map((opt) => (
             <button key={opt.key}
               onClick={() => {
@@ -391,7 +391,7 @@ function DeletePlaylistDialog({ playlist, onCancel, onConfirm }: {
       onMouseDown={(e) => { if (e.currentTarget === e.target) onCancel(); }}
       onClick={(e) => e.stopPropagation()}>
       <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-2">Delete playlist?</h3>
         <p className="text-fg/50 text-sm mb-5 leading-snug">
           <span className="text-fg/80 font-medium">{playlist.name}</span> ({playlist.songIds.length} {playlist.songIds.length === 1 ? 'song' : 'songs'}) will be permanently deleted. Your songs themselves won't be removed from your library. This can't be undone.
@@ -1850,7 +1850,7 @@ export default function App() {
                 {showImportMenu && importMenuPos && createPortal(
                   <div ref={importMenuContentRef}
                     className="fixed w-52 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-                    style={{ top: importMenuPos.top, left: importMenuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
+                    style={{ top: importMenuPos.top, left: importMenuPos.left, background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
                     <div className="p-1">
                       {/* Folder import */}
                       <label className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-fg/80 hover:bg-fg/10 text-sm transition-colors cursor-pointer"
@@ -2180,6 +2180,7 @@ export default function App() {
             onSetPlaybackRate={(r) => { player.setPlaybackRate(r); savePreferences({ playbackRate: r }); }}
             onSetPreservePitch={(p) => { player.setPreservePitch(p); savePreferences({ preservePitch: p }); }}
             playerBarStyle={playerBarStyle}
+            liquidGlass={liquidGlass}
           />
         </div>
       </div>
@@ -2294,7 +2295,7 @@ export default function App() {
           style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(var(--glass-blur-xs))' }}
           onMouseDown={(e) => { if (e.currentTarget === e.target) setShowBulkPlaylistMenu(false); }}>
           <div className="w-full max-w-xs rounded-2xl p-4 shadow-2xl animate-slide-up"
-            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)' }}>
+            style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))' }}>
             <h3 className="text-fg font-semibold text-sm mb-3">
               Add {selectedIds.size} song{selectedIds.size !== 1 ? 's' : ''} to playlist
             </h3>
@@ -2405,7 +2406,7 @@ export default function App() {
               added inside QueuePanel) keeps its rows from being visually
               hidden under the bar instead. */}
           <div className="w-full max-w-sm h-full animate-slide-in-right md:animate-slide-up md:h-auto md:max-h-[80vh]"
-            style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', borderLeft: '1px solid rgb(var(--fg-rgb) / 0.1)', maxWidth: '480px' }}>
+            style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', borderLeft: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', maxWidth: '480px' }}>
             <QueuePanel
               queue={upcomingSongs}
               userQueueLen={userQueueLen}

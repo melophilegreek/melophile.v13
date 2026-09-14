@@ -56,22 +56,27 @@
    variables -- App.tsx sets `data-glass="on"` or `"off"` on <html> from the
    user's saved preference (default: on, per the toggle in Settings), and
    toggling it off collapses every blur radius to 0 and every translucent
-   surface to fully opaque, i.e. the app's original flat-panel look. `on`
-   also pushes saturation and the alpha channel a bit further than the
-   original one-off values (0.92/0.96 -> ~0.82/0.9, 140% -> 160% saturate)
-   so the effect actually reads as "glass" rather than "slightly soft edge".
-*/
+   surface to fully opaque, i.e. the app's original flat-panel look.
+
+   Tuned to actually read as glass rather than "slightly soft edge": surface
+   alpha is low enough (0.72/0.66) that the saturated, heavily-blurred
+   backdrop is genuinely visible through each panel, not just implied by a
+   near-opaque tint. `--glass-accent-mix` feeds a thin, accent-tinted glow
+   into --shadow-panel below (see there) -- the one recurring "this pane is
+   catching light" cue, rather than a generic white glow, so it reads as
+   part of this app's identity instead of a stock frosted-glass effect. */
 :root, [data-glass="on"] {
-  --glass-blur-xs: 5px;    /* thumbnail badges, alpha-scroll bubble */
-  --glass-blur-sm: 10px;   /* modal scrim behind the dialog */
-  --glass-blur-md: 18px;   /* context menus / popovers */
-  --glass-blur-lg: 26px;   /* modal/panel surfaces */
-  --glass-blur-panel: 28px; /* player bar / bottom-sheet glass-panel */
-  --glass-saturate: 165%;
-  --glass-surface-alpha: 0.86;   /* modal & popover backgrounds */
-  --glass-elevated-alpha: 0.82;  /* player bar / glass-panel background */
+  --glass-blur-xs: 6px;     /* thumbnail badges, alpha-scroll bubble */
+  --glass-blur-sm: 14px;    /* modal scrim behind the dialog */
+  --glass-blur-md: 22px;    /* context menus / popovers */
+  --glass-blur-lg: 32px;    /* modal/panel surfaces */
+  --glass-blur-panel: 36px; /* player bar / bottom-sheet glass-panel */
+  --glass-saturate: 185%;
+  --glass-surface-alpha: 0.72;   /* modal & popover backgrounds */
+  --glass-elevated-alpha: 0.66;  /* player bar / glass-panel background */
   --glass-sheen: 1;               /* multiplier: full specular highlight */
-  --glass-border-alpha: 0.12;
+  --glass-border-alpha: 0.16;
+  --glass-accent-mix: 20%;        /* how much accent color tints the panel rim glow */
 }
 [data-glass="off"] {
   --glass-blur-xs: 0px;
@@ -84,6 +89,7 @@
   --glass-elevated-alpha: 1;
   --glass-sheen: 0;
   --glass-border-alpha: 0.08;
+  --glass-accent-mix: 0%;
 }
 
 /* Feature (Premium light mode pass): elevation shadows were pure hardcoded
@@ -101,14 +107,14 @@
    couple of spots that build the value dynamically (accent-tinted rings)
    and so can't use a static Tailwind utility class. */
 :root, [data-theme="dark"] {
-  --shadow-panel: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 24px 48px -20px rgba(0,0,0,0.7);
-  --shadow-panel-outer: 0 1px 0 rgb(255 255 255 / 0.07) inset, 0 20px 44px -18px rgba(0,0,0,0.75);
+  --shadow-panel: 0 1.5px 0 rgb(255 255 255 / calc(0.55 * var(--glass-sheen, 1))) inset, 0 0 0 1px rgb(255 255 255 / calc(0.05 * var(--glass-sheen, 1))) inset, 0 24px 48px -20px rgba(0,0,0,0.7), 0 0 40px -14px color-mix(in srgb, var(--accent-color) var(--glass-accent-mix, 0%), transparent);
+  --shadow-panel-outer: 0 1.5px 0 rgb(255 255 255 / calc(0.6 * var(--glass-sheen, 1))) inset, 0 0 0 1px rgb(255 255 255 / calc(0.05 * var(--glass-sheen, 1))) inset, 0 20px 44px -18px rgba(0,0,0,0.75), 0 0 44px -14px color-mix(in srgb, var(--accent-color) var(--glass-accent-mix, 0%), transparent);
   --shadow-lift: 0 8px 24px -8px rgba(0,0,0,0.6);
   --shadow-toast: 0 12px 36px -8px rgba(0,0,0,0.65);
 }
 [data-theme="light"] {
-  --shadow-panel: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 1px 2px rgb(21 21 26 / 0.04), 0 20px 40px -16px rgb(21 21 26 / 0.16), 0 0 0 1px rgb(21 21 26 / 0.06);
-  --shadow-panel-outer: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 1px 2px rgb(21 21 26 / 0.04), 0 16px 36px -14px rgb(21 21 26 / 0.16), 0 0 0 1px rgb(21 21 26 / 0.06);
+  --shadow-panel: 0 1.5px 0 rgb(255 255 255 / 0.9) inset, 0 0 0 1px rgb(255 255 255 / calc(0.4 * var(--glass-sheen, 1))) inset, 0 1px 2px rgb(21 21 26 / 0.04), 0 20px 40px -16px rgb(21 21 26 / 0.16), 0 0 0 1px rgb(21 21 26 / 0.06), 0 0 40px -16px color-mix(in srgb, var(--accent-color) var(--glass-accent-mix, 0%), transparent);
+  --shadow-panel-outer: 0 1.5px 0 rgb(255 255 255 / 0.9) inset, 0 0 0 1px rgb(255 255 255 / calc(0.4 * var(--glass-sheen, 1))) inset, 0 1px 2px rgb(21 21 26 / 0.04), 0 16px 36px -14px rgb(21 21 26 / 0.16), 0 0 0 1px rgb(21 21 26 / 0.06), 0 0 44px -16px color-mix(in srgb, var(--accent-color) var(--glass-accent-mix, 0%), transparent);
   --shadow-lift: 0 1px 2px rgb(21 21 26 / 0.06), 0 8px 20px -8px rgb(21 21 26 / 0.16);
   --shadow-toast: 0 8px 24px -6px rgb(21 21 26 / 0.2);
 }
@@ -195,12 +201,13 @@
        refracted light traveling through a pane of glass, without a
        per-frame shader. */
     background:
-      linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.07 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 40%),
-      radial-gradient(120% 60% at 15% 0%, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), transparent 60%),
+      linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 40%),
+      radial-gradient(130% 70% at 12% -10%, rgb(var(--fg-rgb) / calc(0.14 * var(--glass-sheen))), transparent 55%),
+      radial-gradient(90% 60% at 100% 120%, color-mix(in srgb, var(--accent-color) calc(var(--glass-accent-mix, 0%) * 0.6), transparent), transparent 60%),
       rgb(var(--elevated-rgb) / var(--glass-elevated-alpha));
     backdrop-filter: blur(var(--glass-blur-panel)) saturate(var(--glass-saturate));
     -webkit-backdrop-filter: blur(var(--glass-blur-panel)) saturate(var(--glass-saturate));
-    border-top: 1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha));
+    border-top: 1px solid rgb(var(--fg-rgb) / calc(var(--glass-border-alpha) * 2));
   }
 
   /* Feature (Liquid Glass theme toggle): shared treatment for modal/sheet
@@ -210,7 +217,8 @@
      above so a single attribute flip resets every one of these at once. */
   .glass-surface {
     background:
-      linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.06 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%),
+      linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.14 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%),
+      radial-gradient(120% 65% at 10% -10%, rgb(var(--fg-rgb) / calc(0.12 * var(--glass-sheen))), transparent 55%),
       rgb(var(--surface-rgb) / var(--glass-surface-alpha));
     backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturate));
     -webkit-backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturate));

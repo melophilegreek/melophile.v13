@@ -153,6 +153,12 @@ interface Props {
    *  the desktop (md:) layout always renders normally regardless of this
    *  prop. */
   playerBarStyle: PlayerBarStyle;
+  /** Feature (Liquid Glass theme toggle): when true (the default), the
+   *  scrim over the blurred/saturated album art backdrop is lighter, so
+   *  more of that backdrop actually shows through -- a real sense of a
+   *  glass pane over the art, not just a soft-edged color block. When
+   *  false, the scrim goes back to its original, fully-opaque strength. */
+  liquidGlass: boolean;
 }
 
 // Feature (Sleep timer): small popover menu shared by desktop/mobile layouts,
@@ -254,7 +260,7 @@ function SleepTimerMenu({ accentColor, endsAt, endOfTrack, onSet, align }: {
       {open && menuPos && createPortal(
         <div ref={menuRef}
           className="fixed w-48 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
+          style={{ top: menuPos.top, left: menuPos.left, background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           <div className="p-1">
             {remaining && (
               <div className="px-3 py-1.5 text-xs text-fg/40">Stops in {remaining}</div>
@@ -350,7 +356,7 @@ function PlaybackSpeedMenu({ accentColor, rate, preservePitch, onSetRate, onSetP
       {open && menuPos && createPortal(
         <div ref={menuRef}
           className="fixed w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-          style={{ top: menuPos.top, left: menuPos.left, background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
+          style={{ top: menuPos.top, left: menuPos.left, background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           <div className="p-1">
             <div className="px-3 py-1.5 text-xs text-fg/40">Playback speed</div>
             {presets.map((p) => (
@@ -567,7 +573,7 @@ function PlayerOptionsMenu({
           // edge in reposition() above) instead of a flat 80vh, so the menu
           // scrolls internally rather than rendering behind the bar.
           className="fixed w-56 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-[70] animate-fade-in overflow-y-auto"
-          style={{ top: menuPos.top, left: menuPos.left, maxHeight: menuMaxHeight ?? '80vh', background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
+          style={{ top: menuPos.top, left: menuPos.left, maxHeight: menuMaxHeight ?? '80vh', background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
           <div className="p-1">
             {/* Playback speed */}
             <button onClick={() => setExpandedSection((s) => (s === 'speed' ? null : 'speed'))}
@@ -682,7 +688,7 @@ export function PlayerBar({
   hasLyrics, onOpenLyrics, sleepTimerEndsAt, sleepTimerEndOfTrack, onSetSleepTimer,
   repeatMode, onSetRepeat,
   playbackRate, preservePitch, onSetPlaybackRate, onSetPreservePitch,
-  theme, playerBarStyle,
+  theme, playerBarStyle, liquidGlass,
 }: Props) {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
   const bg = currentSong ? gradientFor(currentSong.title, theme) : 'linear-gradient(135deg, rgb(var(--elevated-rgb)), rgb(var(--bg-rgb)))';
@@ -743,8 +749,12 @@ export function PlayerBar({
           backdrop to read against, but light mode's `text-fg` is near-black
           and needs the opposite: a light wash instead of a dark one. Tied to
           the same --surface-rgb token the rest of the theme system uses
-          (see index.css) rather than a second hardcoded color. */}
-      <div className="absolute inset-0" style={{ background: `rgb(var(--surface-rgb) / ${theme === 'light' ? 0.72 : 0.55})` }} />
+          (see index.css) rather than a second hardcoded color.
+          Feature (Liquid Glass theme toggle): eased back further (roughly
+          -35%) when liquidGlass is on so the saturated, blurred art behind
+          it actually reads as glass rather than being nearly covered by a
+          flat scrim -- back to the original full strength when it's off. */}
+      <div className="absolute inset-0" style={{ background: `rgb(var(--surface-rgb) / ${(theme === 'light' ? 0.72 : 0.55) * (liquidGlass ? 0.64 : 1)})` }} />
 
       {/* ── MOBILE MINIMIZED LAYOUT (<768px) ── */}
       {/* Feature (Minimized Now Playing bar): compact single-row bar for
@@ -853,7 +863,7 @@ export function PlayerBar({
             {shuffleActive && <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: accentColor }} />}
             {showShuffleMenu && (
               <div className="absolute bottom-10 left-0 w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-                style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
+                style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
                 <div className="p-1">
                   {(['off', 'view', 'library'] as ShuffleMode[]).map((mode) => (
                     <button key={mode} onClick={() => { onShuffleModeChange(mode); setShowShuffleMenu(false); }}
@@ -962,7 +972,7 @@ export function PlayerBar({
               {shuffleActive && <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ background: accentColor }} />}
               {showShuffleMenu && (
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-44 rounded-xl overflow-hidden shadow-2xl border border-fg/10 z-50 animate-fade-in"
-                  style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
+                  style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-md)) saturate(var(--glass-saturate))' }}>
                   <div className="p-1">
                     {(['off', 'view', 'library'] as ShuffleMode[]).map((mode) => (
                       <button key={mode} onClick={() => { onShuffleModeChange(mode); setShowShuffleMenu(false); }}

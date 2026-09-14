@@ -122,7 +122,7 @@ export function LyricsModal({ song, currentTime, accentColor, onClose, onSeek, o
           centered floating card only on desktop, where there's no such
           overlap to worry about. */}
       <div className="w-full h-full md:h-[70vh] md:max-w-md md:rounded-2xl rounded-t-2xl p-5 shadow-2xl animate-slide-up flex flex-col"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
         <div className="flex items-start justify-between mb-3 shrink-0">
           <div className="min-w-0">
             <h3 className="text-fg font-bold text-lg truncate">{localSong.title}</h3>

@@ -261,7 +261,7 @@ function DeleteConfirmDialog({ song, onCancel, onConfirm }: {
       onMouseDown={(e) => { if (e.currentTarget === e.target) onCancel(); }}
       onClick={(e) => e.stopPropagation()}>
       <div className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: 'linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.05 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / 0.1)', boxShadow: 'var(--shadow-panel)' }}>
+        style={{ background: 'radial-gradient(130% 70% at 10% -12%, rgb(var(--fg-rgb) / calc(0.13 * var(--glass-sheen))), transparent 55%), linear-gradient(180deg, rgb(var(--fg-rgb) / calc(0.16 * var(--glass-sheen))), rgb(var(--fg-rgb) / 0) 30%), rgb(var(--surface-rgb) / var(--glass-surface-alpha))', backdropFilter: 'blur(var(--glass-blur-lg)) saturate(var(--glass-saturate))', border: '1px solid rgb(var(--fg-rgb) / var(--glass-border-alpha))', boxShadow: 'var(--shadow-panel)' }}>
         <h3 className="text-fg font-bold text-lg mb-2">Delete song?</h3>
         <p className="text-fg/50 text-sm mb-5 leading-snug">
           <span className="text-fg/80 font-medium">{song.title}</span> will be permanently removed from your library. This can't be undone.
