@@ -633,14 +633,34 @@ export default function App() {
   // the (still bottom-anchored) strip rather than stretching it.
   const listAreaRef = useRef<HTMLDivElement>(null);
   const [scrubberHeight, setScrubberHeight] = useState<number | null>(null);
+  // FIX (scrubber still stretching, this time on scroll-up): the previous
+  // fix committed every ResizeObserver reading straight to state while
+  // headerVisible was true. That's fine while the header sits still, but
+  // headerVisible flips to true *before* the header/toolbar's 300ms
+  // grid-template-rows transition finishes expanding -- so for that whole
+  // 300ms the observer keeps firing on the still-animating in-between
+  // sizes, and each one gets written to state immediately. Since
+  // scrubberHeight drives the strip's actual height, that reproduced the
+  // same letter-stretch animation, just triggered by the header
+  // reappearing instead of collapsing. Debouncing the commit until 320ms
+  // (transition length + margin) after the *last* resize reading means we
+  // only ever store the settled, fully-expanded height -- never a
+  // mid-animation one.
   useEffect(() => {
     const el = listAreaRef.current;
     if (!el) return;
+    let settleTimer: ReturnType<typeof setTimeout> | null = null;
     const ro = new ResizeObserver(([entry]) => {
-      if (headerVisible) setScrubberHeight(entry.contentRect.height);
+      if (!headerVisible) return;
+      const h = entry.contentRect.height;
+      if (settleTimer) clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => setScrubberHeight(h), 320);
     });
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      if (settleTimer) clearTimeout(settleTimer);
+    };
   }, [headerVisible]);
 
   const loadAll = useCallback(async () => {
