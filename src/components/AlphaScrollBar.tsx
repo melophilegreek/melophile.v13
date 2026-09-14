@@ -230,10 +230,18 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, h
                it now actually reads as a tinted pane of glass floating over
                the list rather than a solid sticker; falls back to a fully
                opaque tile when the theme is off (mirrors --glass-surface-alpha's
-               on/off swing elsewhere). */
-            background: `color-mix(in srgb, ${accentColor} calc(58% + 42% * (1 - var(--glass-sheen, 1))), transparent)`,
-            boxShadow: `0 8px 28px -4px ${accentColor}90, inset 0 1.5px 0 rgb(255 255 255 / calc(0.5 * var(--glass-sheen, 1)))`,
-            border: `1px solid color-mix(in srgb, ${accentColor} 40%, transparent)`,
+               on/off swing elsewhere).
+               BUG FIX (glowing-sticker halo): the first pass paired that
+               translucent fill with an oversized, high-alpha drop shadow
+               (28px blur, 56% alpha) meant to be a glass "glow" -- on a
+               fairly light/pastel accent color that instead bloomed into a
+               soft halo that bled into the letter column next to it, more
+               nightlight than glass. Tightened to a small, low-alpha contact
+               shadow (mainly for depth/lift, not glow) plus a crisp 1px rim
+               instead of a broad glossy inset streak. */
+            background: `color-mix(in srgb, ${accentColor} calc(72% + 28% * (1 - var(--glass-sheen, 1))), transparent)`,
+            boxShadow: `0 3px 10px -3px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / calc(0.28 * var(--glass-sheen, 1)))`,
+            border: `1px solid color-mix(in srgb, ${accentColor} 55%, rgb(255 255 255 / 0.14))`,
             backdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
             WebkitBackdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
           }}
