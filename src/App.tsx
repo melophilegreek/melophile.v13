@@ -599,71 +599,20 @@ export default function App() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const rescanInputRef = useRef<HTMLInputElement>(null);
 
-  // Feature (collapsing header on scroll): the top header (Library title +
-  // search + import icon) and the toolbar row beneath it (song count +
-  // Sort, or the playlist/most-played toolbar) hide together as one unit
-  // once the list is scrolled down at all, and only reappear once the
-  // list is scrolled back to the very top -- a small scroll-up no longer
-  // brings it back, since that made it pop back in while still deep in
-  // the list.
-  //
-  // FIX (not collapsing on a slow scroll): comparing consecutive scroll
-  // events' deltas meant a slow drag -- lots of tiny events, each moving
-  // only a pixel or two -- never crossed the threshold on any single
-  // event, even though the total movement did. Track distance from an
-  // "anchor" scrollTop (set only when we actually flip visibility)
-  // instead, so slow scrolling accumulates correctly.
-  const [headerVisible, setHeaderVisible] = useState(true);
-  const headerAnchorRef = useRef(0);
-  const handleListScroll = useCallback((scrollTop: number) => {
-    if (scrollTop <= 16) { setHeaderVisible(true); headerAnchorRef.current = scrollTop; return; }
-    const diff = scrollTop - headerAnchorRef.current;
-    if (diff > 24) { setHeaderVisible(false); headerAnchorRef.current = scrollTop; }
-  }, []);
-
-  // FIX (A-Z scrubber "expanding" while scrolling): the scrubber used to
-  // be `h-full` inside the same flex row as the song list, so it grew/
-  // shrank in lockstep with the collapsing-header animation above (that
-  // row gains height as the header collapses away). The 300ms CSS
-  // transition made the strip's letters visibly stretch apart mid-scroll.
-  // Now its height is locked to a measured pixel value instead of 100%,
-  // and that measurement is only ever taken while the header is visible
-  // -- so header collapse/expand can no longer change it. Extra vertical
-  // room freed up by the header collapsing just becomes blank space above
-  // the (still bottom-anchored) strip rather than stretching it.
+  // Feature (header pinned at top): the header (Library title + search +
+  // import icon) and the toolbar row beneath it (song count + Sort, or the
+  // playlist/most-played toolbar) now stay fixed in place at all times
+  // instead of collapsing on scroll. The previous collapse-on-scroll
+  // animation (a 300ms grid-template-rows transition) changed the song
+  // list's available height on every animation frame, and the list's own
+  // virtualization had to re-measure and re-render its visible rows in
+  // lockstep -- on a large library that read as persistent stutter no
+  // amount of throttling fully smoothed out. Removing the animation
+  // removes the cause rather than continuing to chase the symptom.
   const listAreaRef = useRef<HTMLDivElement>(null);
-  const [scrubberHeight, setScrubberHeight] = useState<number | null>(null);
-  // FIX (scrubber still stretching, this time on scroll-up): the previous
-  // fix committed every ResizeObserver reading straight to state while
-  // headerVisible was true. That's fine while the header sits still, but
-  // headerVisible flips to true *before* the header/toolbar's 300ms
-  // grid-template-rows transition finishes expanding -- so for that whole
-  // 300ms the observer keeps firing on the still-animating in-between
-  // sizes, and each one gets written to state immediately. Since
-  // scrubberHeight drives the strip's actual height, that reproduced the
-  // same letter-stretch animation, just triggered by the header
-  // reappearing instead of collapsing. Debouncing the commit until 320ms
-  // (transition length + margin) after the *last* resize reading means we
-  // only ever store the settled, fully-expanded height -- never a
-  // mid-animation one.
-  useEffect(() => {
-    const el = listAreaRef.current;
-    if (!el) return;
-    let settleTimer: ReturnType<typeof setTimeout> | null = null;
-    const ro = new ResizeObserver(([entry]) => {
-      if (!headerVisible) return;
-      const h = entry.contentRect.height;
-      if (settleTimer) clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => setScrubberHeight(h), 320);
-    });
-    ro.observe(el);
-    return () => {
-      ro.disconnect();
-      if (settleTimer) clearTimeout(settleTimer);
-    };
-  }, [headerVisible]);
 
   const loadAll = useCallback(async () => {
+
     const [allSongs, liked, pinned, pls, prefs, hist] = await Promise.all([
       getAllSongs(), getLikedIds(), getPinnedIds(), getPlaylists(), getPreferences(), getHistory(50),
     ]);
@@ -1827,15 +1776,11 @@ export default function App() {
 
           {/* Main content */}
           <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
-            {/* Feature (collapsing header on scroll): Header + song-list
-                toolbar row collapse together as one unit. The CSS grid
-                "0fr/1fr" trick animates a smooth height without needing a
-                measured pixel value (both rows change height across
-                breakpoints and view states), and the inner overflow-hidden
-                clips content during the transition. */}
-            <div className="shrink-0 grid transition-[grid-template-rows] duration-300 ease-in-out"
-              style={{ gridTemplateRows: headerVisible ? '1fr' : '0fr' }}>
-              <div className="overflow-hidden">
+            {/* Header + song-list toolbar row are pinned here at all
+                times (no more collapse-on-scroll animation -- see the
+                comment above listAreaRef for why it was removed). */}
+            <div className="shrink-0">
+              <div>
             {/* Header */}
             <div className="flex items-center gap-2 px-3 md:px-4 pt-3 pb-2 shrink-0" style={{ borderBottom: '1px solid rgb(var(--fg-rgb) / 0.06)' }}>
               <button className="md:hidden btn-icon w-9 h-9 hover:bg-fg/8 shrink-0" onClick={() => setSidebarOpen(true)}>
@@ -2011,14 +1956,11 @@ export default function App() {
             ) : (
               /* ── SONG LIST VIEWS ── */
               <>
-                {/* Feature (collapsing header on scroll, cont'd): this
-                    toolbar row collapses in lockstep with the Header above
-                    -- only one of the three variants below is ever
-                    rendered at a time, so wrapping all three together is
-                    equivalent to wrapping "whichever one is showing". */}
-                <div className="shrink-0 grid transition-[grid-template-rows] duration-300 ease-in-out"
-                  style={{ gridTemplateRows: headerVisible ? '1fr' : '0fr' }}>
-                  <div className="overflow-hidden">
+                {/* Toolbar row, pinned like the Header above -- only one
+                    of the three variants below is ever rendered at a
+                    time. */}
+                <div className="shrink-0">
+                  <div>
                 {/* Playlist toolbar */}
                 {currentPlaylist && !selectionMode && (
                   <div className="flex items-center gap-2 px-4 py-2 shrink-0" style={{ borderBottom: '1px solid rgb(var(--fg-rgb) / 0.06)' }}>
@@ -2114,7 +2056,7 @@ export default function App() {
                     </div>
                   ) : (
                     <>
-                      <VirtualList ref={listRef} items={rows} className="flex-1" onScroll={handleListScroll}
+                      <VirtualList ref={listRef} items={rows} className="flex-1"
                         getItemHeight={(row) => row.kind === 'header' ? PINNED_HEADER_HEIGHT : ROW_HEIGHTS[rowSize]}
                         renderItem={(row) => row.kind === 'header' ? (
                           <div key={row.id} className="h-full flex items-end px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg/35"
@@ -2156,7 +2098,7 @@ export default function App() {
                           alphabetically (it's filtered straight out of the
                           globally alphabetical `songs` array), so the same
                           jump-to-letter bar now applies there too. */}
-                      {!query && view !== 'most-played' && <AlphaScrollBar songs={alphaSongs} accentColor={accentColor} listRef={listRef} indexOffset={alphaOffset} height={scrubberHeight} />}
+                      {!query && view !== 'most-played' && <AlphaScrollBar songs={alphaSongs} accentColor={accentColor} listRef={listRef} indexOffset={alphaOffset} />}
                     </>
                   )}
                 </div>
