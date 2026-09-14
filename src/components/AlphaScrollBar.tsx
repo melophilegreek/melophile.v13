@@ -98,7 +98,20 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, h
     const rawIdx = Math.max(0, Math.min(LETTERS.length - 1, Math.floor((clientY - rect.top) / rowH)));
     // Bubble tracks the row directly under the finger (feels most
     // responsive), independent of whether that exact letter has matches.
-    setBubbleY(rect.top + (rawIdx + 0.5) * rowH);
+    // FIX (bubble spilling into the Player Bar for the bottommost
+    // letters): the bubble's *center* was always kept within the strip's
+    // own bounds, but the bubble itself is a fixed 72px tall box -- so
+    // for a letter near the very top or bottom of the strip, up to half
+    // that box stuck out past the strip's edge (below into the Player
+    // Bar, or above the top of the screen). Clamping the center to stay
+    // at least half the bubble's height away from each edge keeps the
+    // whole box within the strip's own bounds instead.
+    const BUBBLE_HALF = 36;
+    const rawBubbleY = rect.top + (rawIdx + 0.5) * rowH;
+    const clampedBubbleY = rect.height >= BUBBLE_HALF * 2
+      ? Math.min(Math.max(rawBubbleY, rect.top + BUBBLE_HALF), rect.bottom - BUBBLE_HALF)
+      : rect.top + rect.height / 2;
+    setBubbleY(clampedBubbleY);
 
     // FIX (X/Z -- letters at the tail of the alphabet with no matches --
     // never appearing in the bubble or strip highlight): this used to set
