@@ -183,7 +183,7 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, h
           return (
             <div
               key={letter}
-              className="flex-1 min-h-0 w-6 flex items-center justify-center text-[10px] font-bold rounded-sm transition-colors leading-none"
+              className="flex-1 min-h-0 w-9 flex items-center justify-center text-xs font-bold rounded-sm transition-colors leading-none"
               style={{
                 color: hasMatch ? accentColor : 'rgb(var(--fg-rgb) / 0.2)',
                 backgroundColor: isActive ? 'rgb(var(--fg-rgb) / 0.12)' : 'transparent',
