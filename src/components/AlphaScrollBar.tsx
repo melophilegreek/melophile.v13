@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Song } from '../types';
 import type { VirtualListHandle } from './VirtualList';
-import { getContrastText } from '../lib/color';
 
 const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','#'];
 
@@ -222,26 +221,33 @@ export function AlphaScrollBar({ songs, accentColor, listRef, indexOffset = 0, h
             width: 72,
             height: 72,
             fontSize: 32,
-            color: getContrastText(accentColor),
-            /* Feature (Liquid Glass theme toggle): this used to be a fully
-               opaque `backgroundColor: accentColor`, so the backdropFilter
-               already here had nothing translucent to blur -- it was a
-               no-op. color-mix against transparent gives it real alpha, so
-               it now actually reads as a tinted pane of glass floating over
-               the list rather than a solid sticker; falls back to a fully
-               opaque tile when the theme is off (mirrors --glass-surface-alpha's
-               on/off swing elsewhere).
-               BUG FIX (glowing-sticker halo): the first pass paired that
-               translucent fill with an oversized, high-alpha drop shadow
-               (28px blur, 56% alpha) meant to be a glass "glow" -- on a
-               fairly light/pastel accent color that instead bloomed into a
-               soft halo that bled into the letter column next to it, more
-               nightlight than glass. Tightened to a small, low-alpha contact
-               shadow (mainly for depth/lift, not glow) plus a crisp 1px rim
-               instead of a broad glossy inset streak. */
-            background: `color-mix(in srgb, ${accentColor} calc(72% + 28% * (1 - var(--glass-sheen, 1))), transparent)`,
-            boxShadow: `0 3px 10px -3px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / calc(0.28 * var(--glass-sheen, 1)))`,
-            border: `1px solid color-mix(in srgb, ${accentColor} 55%, rgb(255 255 255 / 0.14))`,
+            color: '#fff',
+            textShadow: '0 1px 4px rgb(0 0 0 / 0.5)',
+            /* Feature (Liquid Glass theme toggle), redesigned: a flat
+               accent-colored fill with a border -- even a translucent one
+               -- just reads as a solid colored icon, since there's no cue
+               telling the eye "this is glass" specifically rather than
+               "this is a blue square". Rebuilt around the same cues real
+               glass/HUD bubbles use (think macOS's volume indicator):
+                (1) a neutral translucent base -- same --elevated-rgb token
+                    every other glass surface in the app uses, not a wash of
+                    pure accent, so it reads as glass *tinted* by the accent
+                    rather than accent-colored plastic;
+                (2) that tint fades from ~50% to ~20% alpha corner-to-corner
+                    instead of sitting flat, which is what gives it a sense
+                    of volume/depth instead of being a flat chip;
+                (3) an actual glare spot (small bright radial highlight,
+                    off-center) -- the single most recognizable "this is
+                    glass" cue, which a 1px inset line doesn't read as at
+                    this size.
+               Text switched to white + a soft drop shadow instead of
+               contrast-computed against the solid accent color, since the
+               fill underneath it is no longer solid or flat enough for that
+               computation to mean much -- white-on-dark-glass is legible
+               regardless of exactly how the tint underneath renders. */
+            background: `radial-gradient(58% 58% at 27% 24%, rgb(255 255 255 / calc(0.55 * var(--glass-sheen, 1))), transparent 62%), linear-gradient(155deg, color-mix(in srgb, ${accentColor} 50%, transparent), color-mix(in srgb, ${accentColor} 18%, transparent)), rgb(var(--elevated-rgb) / var(--glass-elevated-alpha))`,
+            boxShadow: `0 3px 10px -3px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / calc(0.3 * var(--glass-sheen, 1)))`,
+            border: `1px solid rgb(255 255 255 / calc(0.22 * var(--glass-sheen, 1) + 0.08))`,
             backdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
             WebkitBackdropFilter: 'blur(var(--glass-blur-xs)) saturate(var(--glass-saturate))',
           }}
