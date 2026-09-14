@@ -443,8 +443,24 @@ export function SongRow({
               used for the active sidebar item, so "this is playing" reads
               consistently across the whole app instead of just a flat tint. */}
           {isCurrent && <span className="absolute left-0 top-1 bottom-1 w-[3px] rounded-full" style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }} />}
-          {/* Index / Playing / Selection checkbox */}
-          <div className="w-6 flex items-center justify-center shrink-0">
+          {/* Index / Playing / Selection checkbox.
+              FIX (gap on the left edge on mobile): this slot's width was
+              always reserved (`w-6`), but its actual contents -- the row
+              number and the hover-reveal Play icon -- are both hidden on
+              mobile (no hover state on touch, and numbers were
+              intentionally dropped there). That left a permanent blank
+              24px gap before the thumbnail on every row that wasn't
+              currently playing or in selection mode. The slot now only
+              takes up space on mobile when it actually has something to
+              show (the selection checkbox, or the playing equalizer);
+              otherwise it collapses to zero width there. Desktop is
+              unchanged -- it still reserves the width for the index
+              number / hover play icon. */}
+          <div className={
+            selectionMode || (isCurrent && isPlaying)
+              ? 'w-6 flex items-center justify-center shrink-0'
+              : 'w-0 md:w-6 hidden md:flex items-center justify-center shrink-0'
+          }>
             {selectionMode ? (
               <button onClick={(e) => { e.stopPropagation(); onToggleSelect?.(song); }}
                 className="w-5 h-5 rounded-md border flex items-center justify-center transition-colors"
