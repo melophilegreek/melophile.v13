@@ -443,21 +443,20 @@ export function SongRow({
               used for the active sidebar item, so "this is playing" reads
               consistently across the whole app instead of just a flat tint. */}
           {isCurrent && <span className="absolute left-0 top-1 bottom-1 w-[3px] rounded-full" style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }} />}
-          {/* Index / Playing / Selection checkbox.
+          {/* Index / Selection checkbox.
               FIX (gap on the left edge on mobile): this slot's width was
               always reserved (`w-6`), but its actual contents -- the row
               number and the hover-reveal Play icon -- are both hidden on
               mobile (no hover state on touch, and numbers were
               intentionally dropped there). That left a permanent blank
-              24px gap before the thumbnail on every row that wasn't
-              currently playing or in selection mode. The slot now only
-              takes up space on mobile when it actually has something to
-              show (the selection checkbox, or the playing equalizer);
-              otherwise it collapses to zero width there. Desktop is
-              unchanged -- it still reserves the width for the index
-              number / hover play icon. */}
+              24px gap before the thumbnail on every row. The slot now
+              only takes up space on mobile when it actually has
+              something to show (the selection checkbox); otherwise it
+              collapses to zero width there. Desktop is unchanged -- it
+              still reserves the width for the index number / hover play
+              icon. */}
           <div className={
-            selectionMode || (isCurrent && isPlaying)
+            selectionMode
               ? 'w-6 flex items-center justify-center shrink-0'
               : 'w-0 md:w-6 hidden md:flex items-center justify-center shrink-0'
           }>
@@ -467,8 +466,6 @@ export function SongRow({
                 style={{ borderColor: isSelected ? accentColor : 'rgb(var(--fg-rgb) / 0.3)', background: isSelected ? accentColor : 'transparent' }}>
                 {isSelected && <Check size={13} className="text-fg" strokeWidth={3} />}
               </button>
-            ) : isCurrent && isPlaying ? (
-              <PlayingIndicator accent={accentColor} />
             ) : (
               <>
                 {/* Feature (Remove row numbers on mobile): index numbers
@@ -485,9 +482,22 @@ export function SongRow({
             )}
           </div>
 
-          {/* Thumbnail */}
-          <div className={`${s.thumb} rounded-md shrink-0 overflow-hidden flex items-center justify-center`} style={{ background: placeholderBackground(accentColor) }}>
+          {/* Thumbnail.
+              FIX (playing row's thumbnail shifted out of alignment): the
+              equalizer indicator used to live in the index slot to the
+              left of the thumbnail, which meant that slot's width had to
+              be reserved just for the one currently-playing row -- every
+              other row's thumbnail sat further left, so the list looked
+              misaligned as soon as something started playing. It's now a
+              small overlay in the thumbnail's own corner instead, so the
+              thumbnail's position never moves regardless of play state. */}
+          <div className={`relative ${s.thumb} rounded-md shrink-0 overflow-hidden flex items-center justify-center`} style={{ background: placeholderBackground(accentColor) }}>
             {showArt ? <img src={artUrl!} alt="" className="w-full h-full object-cover" onError={onArtError} /> : <span className="text-xs font-semibold" style={{ color: accentColor }}>{initialFor(song)}</span>}
+            {isCurrent && isPlaying && (
+              <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.45)' }}>
+                <PlayingIndicator accent="#fff" />
+              </div>
+            )}
           </div>
 
           {/* Title + meta */}
